@@ -190,6 +190,36 @@
         </li>
       
         
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
@@ -536,138 +566,6 @@ public Purchase build() {
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/12/批量插入数据方案/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jared">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jared73的方阵">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/12/批量插入数据方案/" itemprop="url">批量插入数据方案</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-12T16:40:52+08:00">
-                2018-10-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>之前有过从日志拉去70w条数据到数据,insert到数据库，结果跑了好几个小时，这里使用mysql另一套方案插入数据</p>
-</blockquote>
-<p> &emsp;我们采用load data infile方案，官方文档说这个插入数据方案速度要比insert速度快几十倍，有兴许的同学可以尝试下，下面我给出具体的操作：<br> &emsp;样本文件，可以假定是通过shell脚本从日志拉取文件输出到txt中，当然，也可以其他方案拿到的数据。<br><img src="https://upload-images.jianshu.io/upload_images/10298126-49bdca1d8f7477a3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>记录好他的位置<br><img src="https://upload-images.jianshu.io/upload_images/10298126-03f4b3e6dd0698fc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>我们可以在服务器新建一张test表<br><img src="https://upload-images.jianshu.io/upload_images/10298126-189275d6de3f2b27.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>如图为空数据<br>运行</p>
-<pre><code>load data local infile &quot;C:\\Users\\Administrator\\Desktop\\aa.txt&quot; ignore into table liuqs.test fields terminated by &apos;,&apos;  enclosed by &apos;&quot;&apos;  lines terminated by &apos;\r\n&apos; (id,num);
-</code></pre><p><img src="https://upload-images.jianshu.io/upload_images/10298126-1c4a2738c7a34924.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>我们就可以看到数据插入进数据库了<br><img src="https://upload-images.jianshu.io/upload_images/10298126-113f23de3e26a0d1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>我们这里对    load data local infile “C:\Users\Administrator\Desktop\aa.txt” ignore into table liuqs.test fields terminated by ‘,’  enclosed by ‘“‘  lines terminated by ‘\r\n’ (id,num);<br>解析下<br>  <img src="https://upload-images.jianshu.io/upload_images/10298126-0b9e25dd6b9fecf2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>这块前边为本地样本文件位置，后边是远程库的表名</p>
-<p>terminated 是以某个符号为字段分隔<br><img src="https://upload-images.jianshu.io/upload_images/10298126-f92434a767c570b3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>这里是以,为单位，则第一行是两个字段数据<br>enclosed by ‘“‘这个是表示用某个字符包括字段值，就是处理”111”,”222”，这里省略掉也可以，大家可以试下这种玩法。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/12/常见的java服务器日志分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -762,6 +660,138 @@ public Purchase build() {
 </code></pre><p><img src="https://upload-images.jianshu.io/upload_images/10298126-43106057bc352a7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
 <pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid|awk -F &quot;data:&quot; &apos;{print $2}&apos;|awk -F &quot;【&quot; &apos;{print $2}&apos;|awk -F &quot;】&quot; &apos;{print $1}&apos;|jq &apos;.uid&apos;|sort|uniq|wc -l
 </code></pre><p><img src="https://upload-images.jianshu.io/upload_images/10298126-f8c835f730877326.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>可以看到去重以后由145变成了92，<br>现在就拿到数据了，至于后边数据分析，我们后边会讲到</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/12/批量插入数据方案/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jared">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jared73的方阵">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/12/批量插入数据方案/" itemprop="url">批量插入数据方案</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-12T16:40:52+08:00">
+                2018-10-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>之前有过从日志拉去70w条数据到数据,insert到数据库，结果跑了好几个小时，这里使用mysql另一套方案插入数据</p>
+</blockquote>
+<p> &emsp;我们采用load data infile方案，官方文档说这个插入数据方案速度要比insert速度快几十倍，有兴许的同学可以尝试下，下面我给出具体的操作：<br> &emsp;样本文件，可以假定是通过shell脚本从日志拉取文件输出到txt中，当然，也可以其他方案拿到的数据。<br><img src="https://upload-images.jianshu.io/upload_images/10298126-49bdca1d8f7477a3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>记录好他的位置<br><img src="https://upload-images.jianshu.io/upload_images/10298126-03f4b3e6dd0698fc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>我们可以在服务器新建一张test表<br><img src="https://upload-images.jianshu.io/upload_images/10298126-189275d6de3f2b27.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>如图为空数据<br>运行</p>
+<pre><code>load data local infile &quot;C:\\Users\\Administrator\\Desktop\\aa.txt&quot; ignore into table liuqs.test fields terminated by &apos;,&apos;  enclosed by &apos;&quot;&apos;  lines terminated by &apos;\r\n&apos; (id,num);
+</code></pre><p><img src="https://upload-images.jianshu.io/upload_images/10298126-1c4a2738c7a34924.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>我们就可以看到数据插入进数据库了<br><img src="https://upload-images.jianshu.io/upload_images/10298126-113f23de3e26a0d1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>我们这里对    load data local infile “C:\Users\Administrator\Desktop\aa.txt” ignore into table liuqs.test fields terminated by ‘,’  enclosed by ‘“‘  lines terminated by ‘\r\n’ (id,num);<br>解析下<br>  <img src="https://upload-images.jianshu.io/upload_images/10298126-0b9e25dd6b9fecf2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>这块前边为本地样本文件位置，后边是远程库的表名</p>
+<p>terminated 是以某个符号为字段分隔<br><img src="https://upload-images.jianshu.io/upload_images/10298126-f92434a767c570b3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>这里是以,为单位，则第一行是两个字段数据<br>enclosed by ‘“‘这个是表示用某个字符包括字段值，就是处理”111”,”222”，这里省略掉也可以，大家可以试下这种玩法。</p>
 
           
         
