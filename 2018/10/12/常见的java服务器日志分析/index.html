@@ -81,7 +81,7 @@
 
 <meta name="description" content="有时候在工作中，我们需要对日志进行处理，这里我对我碰到的一些进行总结   提取数据 首先可以打开日志，查看下结构  这里可以看到日志数据&amp;emsp;我们一般需要拿到访问某个接口的uid，time，app版本，登录手机的平台等信息首先我们先定位接口的数据：&amp;emsp;  格式这样：grep  查询的关键字  查询文件 grep getArticleInfo ysz-gateway-2018_0">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Jared73的方阵">
+<meta property="og:title" content="常见的java服务器日志分析">
 <meta property="og:url" content="http://yoursite.com/2018/10/12/常见的java服务器日志分析/index.html">
 <meta property="og:site_name" content="Jared73的方阵">
 <meta property="og:description" content="有时候在工作中，我们需要对日志进行处理，这里我对我碰到的一些进行总结   提取数据 首先可以打开日志，查看下结构  这里可以看到日志数据&amp;emsp;我们一般需要拿到访问某个接口的uid，time，app版本，登录手机的平台等信息首先我们先定位接口的数据：&amp;emsp;  格式这样：grep  查询的关键字  查询文件 grep getArticleInfo ysz-gateway-2018_0">
@@ -95,9 +95,9 @@
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/10298126-03311b127a8d8dfa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/10298126-43106057bc352a7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/10298126-f8c835f730877326.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-10-12T09:22:16.268Z">
+<meta property="og:updated_time" content="2018-10-12T09:32:50.392Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jared73的方阵">
+<meta name="twitter:title" content="常见的java服务器日志分析">
 <meta name="twitter:description" content="有时候在工作中，我们需要对日志进行处理，这里我对我碰到的一些进行总结   提取数据 首先可以打开日志，查看下结构  这里可以看到日志数据&amp;emsp;我们一般需要拿到访问某个接口的uid，time，app版本，登录手机的平台等信息首先我们先定位接口的数据：&amp;emsp;  格式这样：grep  查询的关键字  查询文件 grep getArticleInfo ysz-gateway-2018_0">
 <meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/10298126-44e1ebf2184a9812.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 
@@ -135,7 +135,7 @@
 
 
 
-  <title> | Jared73的方阵</title>
+  <title>常见的java服务器日志分析 | Jared73的方阵</title>
   
 
 
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">常见的java服务器日志分析</h1>
         
 
         <div class="post-meta">
@@ -271,7 +271,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-12T17:22:16+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-12T16:40:52+08:00">
                 2018-10-12
               </time>
             
@@ -314,7 +314,7 @@
 </blockquote>
 <ul>
 <li><p>提取数据<br> 首先可以打开日志，查看下结构<br>  <img src="https://upload-images.jianshu.io/upload_images/10298126-44e1ebf2184a9812.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>这里可以看到日志数据<br><img src="https://upload-images.jianshu.io/upload_images/10298126-f501e0997c20ecc2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>&emsp;我们一般需要拿到访问某个接口的uid，time，app版本，登录手机的平台等信息<br>首先我们先定位接口的数据：<br>&emsp;  格式这样：grep  查询的关键字  查询文件</p>
-<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log 
+<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log
 </code></pre><p> <img src="https://upload-images.jianshu.io/upload_images/10298126-7a5ebfc36da2120b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>&emsp;如图，我们拿到了所有这个接口的相关数据，<br>&emsp;我们这里需要提取这里的数据比如，我们要uid，这里我们需要管道处理<br>&emsp; 解释下管道：我的理解大意是前边的结果作为参数传给后边处理，实际用多了，你们就体会到了，</p>
 <pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid
 </code></pre><p>&emsp;获取到这个接口包含uid的行<br><img src="https://upload-images.jianshu.io/upload_images/10298126-d52a9c56774acb4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
@@ -356,8 +356,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/12/java的构造者模式（builder）/" rel="next" title="java的构造者模式">
-                <i class="fa fa-chevron-left"></i> java的构造者模式
+              <a href="/2018/10/10/10.10问题处理/" rel="next" title="10-10问题">
+                <i class="fa fa-chevron-left"></i> 10-10问题
               </a>
             
           </div>
@@ -365,6 +365,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/12/批量插入数据方案/" rel="prev" title="批量插入数据方案">
+                批量插入数据方案 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>

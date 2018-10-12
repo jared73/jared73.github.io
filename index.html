@@ -232,148 +232,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/12/常见的java服务器日志分析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jared">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Jared73的方阵">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/12/常见的java服务器日志分析/" itemprop="url">未命名</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-12T17:22:16+08:00">
-                2018-10-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>  有时候在工作中，我们需要对日志进行处理，这里我对我碰到的一些进行总结</p>
-</blockquote>
-<ul>
-<li><p>提取数据<br> 首先可以打开日志，查看下结构<br>  <img src="https://upload-images.jianshu.io/upload_images/10298126-44e1ebf2184a9812.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>这里可以看到日志数据<br><img src="https://upload-images.jianshu.io/upload_images/10298126-f501e0997c20ecc2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>&emsp;我们一般需要拿到访问某个接口的uid，time，app版本，登录手机的平台等信息<br>首先我们先定位接口的数据：<br>&emsp;  格式这样：grep  查询的关键字  查询文件</p>
-<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log 
-</code></pre><p> <img src="https://upload-images.jianshu.io/upload_images/10298126-7a5ebfc36da2120b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>&emsp;如图，我们拿到了所有这个接口的相关数据，<br>&emsp;我们这里需要提取这里的数据比如，我们要uid，这里我们需要管道处理<br>&emsp; 解释下管道：我的理解大意是前边的结果作为参数传给后边处理，实际用多了，你们就体会到了，</p>
-<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid
-</code></pre><p>&emsp;获取到这个接口包含uid的行<br><img src="https://upload-images.jianshu.io/upload_images/10298126-d52a9c56774acb4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>&emsp;如下图，我们要提取[]里的内容，这里处理方法很多，我一般用awk<br><img src="https://upload-images.jianshu.io/upload_images/10298126-2ab7110824debe4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-</li>
-</ul>
-<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid|awk -F &quot;data:&quot; &apos;{print $2}&apos;
-</code></pre><p>这里awk -F是截取，这里是以data:为分割，输出第二段内容<br><img src="https://upload-images.jianshu.io/upload_images/10298126-6fae828d5feb045e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>和一般的json还差点啥，应该是去掉[]，我们这里还是用awk -F解决</p>
-<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid|awk -F &quot;data:&quot; &apos;{print $2}&apos;|awk -F &quot;【&quot; &apos;{print $2}&apos;|awk -F &quot;】&quot; &apos;{print $1}&apos;
-</code></pre><p>然后就推荐使用jq插件了，yum install jq就可以安装了，<br>我们使用方法，比如要拿到uid，就这么写<br>继续管道后续</p>
-<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid|awk -F &quot;data:&quot; &apos;{print $2}&apos;|awk -F &quot;【&quot; &apos;{print $2}&apos;|awk -F &quot;】&quot; &apos;{print $1}&apos;|jq &apos;.uid&apos;
-</code></pre><p><img src="https://upload-images.jianshu.io/upload_images/10298126-03311b127a8d8dfa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>管道继续，有时候我们要去重，我们可以对uid排序，去重</p>
-<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid|awk -F &quot;data:&quot; &apos;{print $2}&apos;|awk -F &quot;【&quot; &apos;{print $2}&apos;|awk -F &quot;】&quot; &apos;{print $1}&apos;|jq &apos;.uid&apos;|wc -l  先看下行数
-</code></pre><p><img src="https://upload-images.jianshu.io/upload_images/10298126-43106057bc352a7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid|awk -F &quot;data:&quot; &apos;{print $2}&apos;|awk -F &quot;【&quot; &apos;{print $2}&apos;|awk -F &quot;】&quot; &apos;{print $1}&apos;|jq &apos;.uid&apos;|sort|uniq|wc -l
-</code></pre><p><img src="https://upload-images.jianshu.io/upload_images/10298126-f8c835f730877326.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>可以看到去重以后由145变成了92，<br>现在就拿到数据了，至于后边数据分析，我们后边会讲到</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/12/java的构造者模式（builder）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -762,6 +620,148 @@ public Purchase build() {
 <p>这块前边为本地样本文件位置，后边是远程库的表名</p>
 <p>terminated 是以某个符号为字段分隔<br><img src="https://upload-images.jianshu.io/upload_images/10298126-f92434a767c570b3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
 <p>这里是以,为单位，则第一行是两个字段数据<br>enclosed by ‘“‘这个是表示用某个字符包括字段值，就是处理”111”,”222”，这里省略掉也可以，大家可以试下这种玩法。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/12/常见的java服务器日志分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jared">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jared73的方阵">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/12/常见的java服务器日志分析/" itemprop="url">常见的java服务器日志分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-12T16:40:52+08:00">
+                2018-10-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>  有时候在工作中，我们需要对日志进行处理，这里我对我碰到的一些进行总结</p>
+</blockquote>
+<ul>
+<li><p>提取数据<br> 首先可以打开日志，查看下结构<br>  <img src="https://upload-images.jianshu.io/upload_images/10298126-44e1ebf2184a9812.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>这里可以看到日志数据<br><img src="https://upload-images.jianshu.io/upload_images/10298126-f501e0997c20ecc2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>&emsp;我们一般需要拿到访问某个接口的uid，time，app版本，登录手机的平台等信息<br>首先我们先定位接口的数据：<br>&emsp;  格式这样：grep  查询的关键字  查询文件</p>
+<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log
+</code></pre><p> <img src="https://upload-images.jianshu.io/upload_images/10298126-7a5ebfc36da2120b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>&emsp;如图，我们拿到了所有这个接口的相关数据，<br>&emsp;我们这里需要提取这里的数据比如，我们要uid，这里我们需要管道处理<br>&emsp; 解释下管道：我的理解大意是前边的结果作为参数传给后边处理，实际用多了，你们就体会到了，</p>
+<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid
+</code></pre><p>&emsp;获取到这个接口包含uid的行<br><img src="https://upload-images.jianshu.io/upload_images/10298126-d52a9c56774acb4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>&emsp;如下图，我们要提取[]里的内容，这里处理方法很多，我一般用awk<br><img src="https://upload-images.jianshu.io/upload_images/10298126-2ab7110824debe4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+</li>
+</ul>
+<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid|awk -F &quot;data:&quot; &apos;{print $2}&apos;
+</code></pre><p>这里awk -F是截取，这里是以data:为分割，输出第二段内容<br><img src="https://upload-images.jianshu.io/upload_images/10298126-6fae828d5feb045e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>和一般的json还差点啥，应该是去掉[]，我们这里还是用awk -F解决</p>
+<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid|awk -F &quot;data:&quot; &apos;{print $2}&apos;|awk -F &quot;【&quot; &apos;{print $2}&apos;|awk -F &quot;】&quot; &apos;{print $1}&apos;
+</code></pre><p>然后就推荐使用jq插件了，yum install jq就可以安装了，<br>我们使用方法，比如要拿到uid，就这么写<br>继续管道后续</p>
+<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid|awk -F &quot;data:&quot; &apos;{print $2}&apos;|awk -F &quot;【&quot; &apos;{print $2}&apos;|awk -F &quot;】&quot; &apos;{print $1}&apos;|jq &apos;.uid&apos;
+</code></pre><p><img src="https://upload-images.jianshu.io/upload_images/10298126-03311b127a8d8dfa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>管道继续，有时候我们要去重，我们可以对uid排序，去重</p>
+<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid|awk -F &quot;data:&quot; &apos;{print $2}&apos;|awk -F &quot;【&quot; &apos;{print $2}&apos;|awk -F &quot;】&quot; &apos;{print $1}&apos;|jq &apos;.uid&apos;|wc -l  先看下行数
+</code></pre><p><img src="https://upload-images.jianshu.io/upload_images/10298126-43106057bc352a7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<pre><code>grep getArticleInfo ysz-gateway-2018_06_07-1.log | grep uid|awk -F &quot;data:&quot; &apos;{print $2}&apos;|awk -F &quot;【&quot; &apos;{print $2}&apos;|awk -F &quot;】&quot; &apos;{print $1}&apos;|jq &apos;.uid&apos;|sort|uniq|wc -l
+</code></pre><p><img src="https://upload-images.jianshu.io/upload_images/10298126-f8c835f730877326.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>可以看到去重以后由145变成了92，<br>现在就拿到数据了，至于后边数据分析，我们后边会讲到</p>
 
           
         
