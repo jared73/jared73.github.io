@@ -308,13 +308,13 @@
 </li>
 <li><p><del>限时场商品，查询商品同一个场只能出现一次</del></p>
 </li>
-<li><p>活动专区，编辑商品时，商品不可编辑</p>
+<li><p><del>活动专区，编辑商品时，商品不可编辑</del></p>
 </li>
-<li><p>活动专区，编辑商品时，会校验医米以及价格是否大于原商品信息。</p>
+<li><p><del>活动专区，编辑商品时，会校验医米以及价格是否大于原商品信息。</del></p>
 </li>
-<li><p>活动专区，编辑商品保存时，ajax一下拿到当前库存，看是否够用。商品表中在售数量减去在限时场中该商品出现的在售数量。</p>
+<li><p><del>活动专区，编辑商品保存时，ajax一下拿到当前库存，看是否够用。商品表中在售数量减去在限时场中该商品出现的在售数量。</del></p>
 </li>
-<li><p>活动专区，编辑商品，库存那块，onsaleNum会直接替换，stockNum会进行计算。算法：1、若大于stockNum则，现stockNum=onsaleNum+(stockNum-原onsaleNum)，若小于stockNum,则stockNum=stockNum+现onsaleNum-(stockNum-原onsaleNum)</p>
+<li><p><del>活动专区，编辑商品，库存那块，onsaleNum会直接替换，stockNum会进行计算。算法：stockNum=webOnsaleNum-原onsaleNum</del></p>
 </li>
 </ul>
 <h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><ul>
